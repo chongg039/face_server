@@ -1,18 +1,26 @@
 #!flask/bin/python
 # -*- coding:utf-8 -*-
 from flask import Flask, jsonify, abort, make_response, request
+from configparser import ConfigParser
 import TencentYoutuyun
 
-appid = '10142343'
-secret_id = 'AKIDfBWfdPIOcO4d5MzL3bx7A2Unvrb9thhc'
-secret_key = 'uUwFMH0Xs32YyoX5TkrnX5RbdU9d3MTO'
-userid = '916956726'
+conf = ConfigParser()
+conf.read('config.ini')
 
-end_point = TencentYoutuyun.conf.API_YOUTU_END_POINT
+APP_ID = conf.get('params', 'app_id')
+SECRET_ID = conf.get('params', 'secret_id')
+SECRET_KEY = conf.get('params', 'secret_key')
+USER_ID = conf.get('params', 'user_id')
+
+HOST = conf.get('server', 'host')
+PORT = conf.getint('server', 'port')
+DEBUG = conf.get('server', 'debug')
+
+END_POINT = TencentYoutuyun.conf.API_YOUTU_END_POINT
 
 app = Flask(__name__)
 
-youtu = TencentYoutuyun.YouTu(appid, secret_id, secret_key, userid, end_point)
+youtu = TencentYoutuyun.YouTu(APP_ID, SECRET_ID, SECRET_KEY, USER_ID, END_POINT)
 
 # 创建个体，此函数小程序暂不使用
 @app.route('/face/api/newstu', methods=['POST'])
@@ -251,7 +259,7 @@ def not_found(error):
 
 if __name__ == '__main__':
     app.run(
-        host='0.0.0.0', 
-        port=2333, 
-        debug = 'True'
+        host = HOST, 
+        port = PORT, 
+        debug = DEBUG
     )
